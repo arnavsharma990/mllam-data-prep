@@ -1,8 +1,6 @@
 """
 Unit tests for helper functions in ops.selection module.
 """
-import datetime
-
 import pandas as pd
 import pytest
 import xarray as xr
@@ -70,15 +68,13 @@ def test_check_step_non_constant_step():
 
 
 def test_check_step_single_point_coordinate():
-    """Test check_step with single point coordinate (edge case - will raise IndexError)."""
-    # Create dataset with single time point (diff will be empty array)
+    """Test check_step with single point coordinate (should raise descriptive ValueError)."""
+    # Create dataset with single time point
     time_values = pd.date_range("2020-01-01", periods=1, freq="3H")
     ds = xr.Dataset(
         {"var": (["time"], [1])},
         coords={"time": time_values},
     )
     requested_step = pd.Timedelta(hours=3)
-    # This will raise IndexError when trying to access all_steps[0] on empty array
-    # This documents current behavior - could be improved to raise more descriptive error
-    with pytest.raises(IndexError):
+    with pytest.raises(ValueError, match="Cannot compute step size.*fewer than 2 points"):
         check_step(requested_step, "time", ds)

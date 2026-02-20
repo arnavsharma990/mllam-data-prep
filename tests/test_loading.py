@@ -1,9 +1,6 @@
 """
 Unit tests for ops.loading module.
 """
-import tempfile
-from pathlib import Path
-
 import pytest
 import xarray as xr
 
@@ -32,8 +29,11 @@ def test_load_input_dataset_zarr(sample_dataset, tmp_path):
 
 def test_load_input_dataset_netcdf(sample_dataset, tmp_path):
     """Test load_input_dataset with netCDF format."""
+    # Skip if NetCDF engine is not available
+    pytest.importorskip("netCDF4")
+    
     nc_path = tmp_path / "test.nc"
-    sample_dataset.to_netcdf(nc_path)
+    sample_dataset.to_netcdf(nc_path, engine="netcdf4")
     
     loaded = load_input_dataset(str(nc_path))
     assert isinstance(loaded, xr.Dataset)

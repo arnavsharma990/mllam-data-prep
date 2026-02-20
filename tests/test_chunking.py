@@ -4,6 +4,7 @@ Unit tests for ops.chunking module.
 import numpy as np
 import pytest
 import xarray as xr
+from loguru import logger
 
 from mllam_data_prep.ops.chunking import check_chunk_size, chunk_dataset
 
@@ -20,37 +21,32 @@ def small_dataset():
     )
 
 
-@pytest.fixture
-def large_dataset():
-    """Create a dataset that will exceed chunk size warning."""
-    # Create dataset with large chunks that exceed 1GB warning
-    # Using float64 (8 bytes), need > 1GB / 8 = 134217728 elements
-    # For simplicity, create a smaller but still large dataset
-    size = 5000
-    return xr.Dataset(
-        {
-            "large_var": (["x", "y"], np.random.random((size, size))),
-        },
-        coords={"x": range(size), "y": range(size)},
-    )
-
-
-def test_check_chunk_size_small_chunks(small_dataset, caplog):
+def test_check_chunk_size_small_chunks(small_dataset):
     """Test check_chunk_size with small chunks (should not warn)."""
     chunks = {"x": 5, "y": 5}
+    # Should not raise or warn
     check_chunk_size(small_dataset, chunks)
-    # Should not log any warnings
-    assert len(caplog.records) == 0
 
 
-def test_check_chunk_size_large_chunks(large_dataset, caplog):
+def test_check_chunk_size_large_chunks(small_dataset):
     """Test check_chunk_size with large chunks (should warn)."""
-    # Use chunks that will create large memory usage
-    chunks = {"x": 1000, "y": 1000}
-    check_chunk_size(large_dataset, chunks)
-    # Should log a warning
-    assert len(caplog.records) > 0
-    assert "exceeds" in caplog.records[0].message.lower()
+    # Use chunk sizes that exceed 1GB threshold
+    # For float64 (8 bytes), need chunks product > 1GB / 8 = 134217728
+    # Using chunks of 12000 x 12000 = 144000000 elements > 134217728
+    chunks = {"x": 12000, "y": 12000}
+    
+    # Capture loguru logs using a handler
+    from io import StringIO
+    
+    log_capture = StringIO()
+    handler_id = logger.add(log_capture, format="{message}")
+    
+    try:
+        check_chunk_size(small_dataset, chunks)
+        log_output = log_capture.getvalue()
+        assert "exceeds" in log_output.lower()
+    finally:
+        logger.remove(handler_id)
 
 
 def test_check_chunk_size_missing_dimension(small_dataset):
