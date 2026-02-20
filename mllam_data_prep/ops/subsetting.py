@@ -1,4 +1,13 @@
-def extract_variable(ds, var_name, coords_to_sample=dict()):
+from typing import Any, Dict, List, Optional, Union
+
+import xarray as xr
+
+
+def extract_variable(
+    ds: xr.Dataset,
+    var_name: Union[str, Dict[str, Any], List[str]],
+    coords_to_sample: Optional[Dict[str, Any]] = None,
+) -> xr.DataArray:
     """
     Extract specified variable from the provided input dataset. If
     coordinates for subsetting are defined, then subset the variable along
@@ -21,6 +30,8 @@ def extract_variable(ds, var_name, coords_to_sample=dict()):
     da: xr.DataArray
         Extracted variable (subsetted along the specified coordinates)
     """
+    if coords_to_sample is None:
+        coords_to_sample = {}
 
     try:
         da = ds[var_name]
