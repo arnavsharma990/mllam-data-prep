@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [unreleased](https://github.com/mllam/mllam-data-prep/compare/v0.7.0...HEAD)
 
 ### Fixes
-- fix bug where coordinate selection of an unshared dimension isn't applied to subsequent ouput variables when an output variable without this dimension is processed before the others [\#90](https://github.com/mllam/mllam-data-prep/pull/90) @zweihuehner & @leifdenby
+- fix bug where coordinate selection of an unshared dimension isn't applied to subsequent output variables when an output variable without this dimension is processed before the others [\#90](https://github.com/mllam/mllam-data-prep/pull/90) @zweihuehner & @leifdenby
 
 ## [v0.7.0](https://github.com/mllam/mllam-data-prep/release/tag/v0.7.0)
 
@@ -90,7 +90,7 @@ interface and addresses bugs around optional dependencies for
 
 ### Added
 
-- add access to CLI via `mllam_data_prep` and add tests for CLI with/without `dask.distributed` ![\25](https://github.com/mllam/mllam-data-prep/pull/25).
+- add access to CLI via `mllam_data_prep` and add tests for CLI with/without `dask.distributed` ![\#25](https://github.com/mllam/mllam-data-prep/pull/25).
 - add optional output path argument to parser. ![\#26](https://github.com/mllam/mllam-data-prep/pull/26)
 
 ### Changed
