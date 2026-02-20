@@ -1,12 +1,14 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, Optional
 
 import xarray as xr
+
+from ..config import ValueSelection
 
 
 def extract_variable(
     ds: xr.Dataset,
-    var_name: Union[str, Dict[str, Any], List[str]],
-    coords_to_sample: Optional[Dict[str, Any]] = None,
+    var_name: str,
+    coords_to_sample: Optional[Dict[str, ValueSelection]] = None,
 ) -> xr.DataArray:
     """
     Extract specified variable from the provided input dataset. If
@@ -17,13 +19,12 @@ def extract_variable(
     ----------
     ds : xr.Dataset
         Input dataset
-    var_name : Union[Dict, List]
-        Either a list or dictionary with variables to extract.
-        If a dictionary the keys are the variable name and the values are
-        entries for each coordinate and coordinate values to extract
-    coords_to_sample: Dict
+    var_name : str
+        Name of the variable to extract from the dataset
+    coords_to_sample: Dict[str, ValueSelection], optional
         Optional argument for subsetting/sampling along the specified
-        coordinates
+        coordinates. Keys are coordinate names, values are ValueSelection
+        objects defining the values to select and optionally the units.
 
     Returns
     ----------
