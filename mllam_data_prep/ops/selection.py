@@ -1,5 +1,5 @@
 import datetime
-from typing import Any, List, Union
+from typing import List, Optional, Union
 
 import pandas as pd
 import xarray as xr
@@ -8,8 +8,8 @@ from ..config import Range
 
 
 def _normalize_slice_startstop(
-    s: Union[pd.Timestamp, str, Any]
-) -> Union[pd.Timestamp, str, Any]:
+    s: Union[pd.Timestamp, str, int, float]
+) -> Union[pd.Timestamp, str, int, float]:
     if isinstance(s, pd.Timestamp):
         return s
     elif isinstance(s, str):
@@ -22,8 +22,8 @@ def _normalize_slice_startstop(
 
 
 def _normalize_slice_step(
-    s: Union[pd.Timedelta, str, Any]
-) -> Union[pd.Timedelta, str, Any]:
+    s: Optional[Union[pd.Timedelta, str, int, float]]
+) -> Optional[Union[pd.Timedelta, str, int, float]]:
     if isinstance(s, pd.Timedelta):
         return s
     elif isinstance(s, str):
